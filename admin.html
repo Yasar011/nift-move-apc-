@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Movie Night Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+
+        .booking-details {
+            margin-top: 30px;
+        }
+
+        .booking-details h2 {
+            color: #007bff;
+        }
+
+        .booking-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .booking-details th,
+        .booking-details td {
+            padding: 10px;
+            border: 1px solid #777;
+            text-align: left;
+        }
+
+        .booking-details th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .booking-details tr:nth-child(even) {
+            background-color: #555;
+        }
+
+        .booking-details tr.paid {
+            background-color: #28a745; /* Green for paid */
+        }
+
+        .booking-details tr.confirmed {
+            background-color: #ffc107; /* Yellow for confirmed */
+        }
+
+        .booking-details tr:hover {
+            background-color: #666;
+        }
+
+        .booking-details button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .booking-details button.paid {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .booking-details button.confirmed {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .booking-details button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel - Movie Night Booking</h1>
+
+        <!-- Booking Details -->
+        <div class="booking-details">
+            <h2>Booking Details</h2>
+            <table id="bookingTable">
+                <thead>
+                    <tr>
+                        <th>Seat Number</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Semester</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpew8ODVHmmGndhZxQ3VK_CEurW0_EQyU",
+            authDomain: "nift-movie-nigt-apc.firebaseapp.com",
+            databaseURL: "https://nift-movie-nigt-apc-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "nift-movie-nigt-apc",
+            storageBucket: "nift-movie-nigt-apc.appspot.com",
+            messagingSenderId: "736122244542",
+            appId: "1:736122244542:web:69d88050a26fc8391dbdef",
+            measurementId: "G-GL1MBM6DW6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Load seat data from Firebase
+        const seatStatusRef = ref(database, "seats/");
+        onValue(seatStatusRef, (snapshot) => {
+            const seatData = snapshot.val() || {};
+            const bookingTable = document.getElementById("bookingTable").getElementsByTagName("tbody")[0];
+
+            // Clear existing content
+            bookingTable.innerHTML = "";
+
+            // Populate booking details table
+            for (const seatId in seatData) {
+                if (seatData[seatId].status !== "available") {
+                    const row = bookingTable.insertRow();
+                    row.insertCell().textContent = seatId;
+                    row.insertCell().textContent = seatData[seatId].name;
+                    row.insertCell().textContent = seatData[seatId].department;
+                    row.insertCell().textContent = seatData[seatId].semester;
+                    row.insertCell().textContent = seatData[seatId].email;
+                    row.insertCell().textContent = seatData[seatId].phone;
+                    row.insertCell().textContent = seatData[seatId].status;
+
+                    // Add action buttons
+                    const actionCell = row.insertCell();
+                    if (seatData[seatId].status === "paid") {
+                        // Show Confirmed button for paid seats
+                        const confirmedButton = document.createElement("button");
+                        confirmedButton.textContent = "Confirmed";
+                        confirmedButton.classList.add("confirmed");
+                        confirmedButton.onclick = () => markSeatAsConfirmed(seatId);
+                        actionCell.appendChild(confirmedButton);
+                    } else {
+                        // Show Paid button for non-paid seats
+                        const paidButton = document.createElement("button");
+                        paidButton.textContent = "Paid";
+                        paidButton.classList.add("paid");
+                        paidButton.onclick = () => markSeatAsPaid(seatId);
+                        actionCell.appendChild(paidButton);
+                    }
+
+                    // Update row color based on status
+                    if (seatData[seatId].status === "paid") {
+                        row.classList.add("paid");
+                    } else if (seatData[seatId].status === "confirmed") {
+                        row.classList.add("confirmed");
+                    }
+                }
+            }
+        });
+
+        // Mark seat as paid
+        function markSeatAsPaid(seatId) {
+            update(ref(database, `seats/${seatId}`), {
+                status: "paid"
+            });
+            alert(`Seat ${seatId} marked as paid.`);
+        }
+
+        // Mark seat as confirmed
+        function markSeatAsConfirmed(seatId) {
+            update(ref(database, `seats/${seatId}`), {
+                status: "confirmed"
+            });
+            alert(`Seat ${seatId} marked as confirmed.`);
+        }
+    </script>
+</body>
+</html>
