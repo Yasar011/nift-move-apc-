@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Night</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .background-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            animation: slide 20s infinite; /* 4 images * 5s each */
+        }
+
+        .background-slideshow img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        @keyframes slide {
+            0%, 100% { opacity: 0; }
+            25% { opacity: 1; }
+            50% { opacity: 0; }
+            75% { opacity: 1; }
+        }
+
+        .background-slideshow img:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .background-slideshow img:nth-child(2) {
+            animation-delay: 5s;
+        }
+
+        .background-slideshow img:nth-child(3) {
+            animation-delay: 10s;
+        }
+
+        .background-slideshow img:nth-child(4) {
+            animation-delay: 15s;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        .content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .content p {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .club-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .book-now-button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .book-now-button:hover {
+            background-color: #0056b3;
+        }
+
+        .developer-details {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 0.9rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .developer-details a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .developer-details a:hover {
+            text-decoration: underline;
+        }
+
+        .admin-login-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #ff5722;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-login-button:hover {
+            background-color: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Slideshow -->
+    <div class="background-slideshow">
+        <img src="R.jpeg" alt="Movie 1">
+        <img src="300648.jpg" alt="Movie 2">
+        <img src="MV5BYmJkMjM3NTktYThjZS00YzQyLTlkMDMtZWU2Y2U1Mjc0ZWExL2ltYWdlXkEyXkFqcGdeQXVyNzE4NDc2Mjc@._V1_.jpg" alt="Movie 3">
+        <img src="R (1).jpeg" alt="Movie 4">
+    </div>
+
+    <!-- Admin Login Button -->
+    <button class="admin-login-button" onclick="window.location.href='admin-login.html'">Admin Login</button>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Club Logo -->
+        <img src="adventure and photography club logo-Recovered@0.5x.png" alt="Club Logo" class="club-logo">
+
+        <h1>Welcome to Movie Night!</h1>
+        <p>Join us for an unforgettable cinematic experience.</p>
+
+        <!-- Movie Details (Plain Text) -->
+        <p><strong>Movie:</strong> Border</p>
+
+        <!-- Book Now Button -->
+        <button class="book-now-button" onclick="window.location.href='booking.html'">Book Now</button>
+    </div>
+
+    <!-- Developer Details -->
+    <div class="developer-details">
+        <p>Developed by: <strong>Yasar C H</strong></p>
+        <p>Email: <a href="mailto:Yasar.h@nift.ac.in">Yasar.h@nift.ac.in</a></p>
+        <p>Instagram: <a href="https://www.instagram.com/y_asar?igsh=MWwza3R5d2R5Mm5qaA==" target="_blank">@y_asar</a></p>
+    </div>
+</body>
+</html>
